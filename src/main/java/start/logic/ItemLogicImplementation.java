@@ -49,7 +49,7 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
 
 		System.out.println("" + item.toString());
-
+		
 		if (op.isPresent()) {
 			if (isUserManger(op) || isUserAdmin(op)) {
 				ItemEntity i = this.convertFromBoundary(item);
@@ -202,6 +202,38 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public ItemBoundary getBlockChain(String userSpace, String userEmail, String itemSpace, String itemId) {
+		// TODO Auto-generated method stub
+
+		Optional<ItemEntity> op_item = this.itemDao.findById(itemId + "$" + userSpace);
+		Optional<UserEntity> op_user = this.userDao.findById(userEmail + "$" + userSpace);
+
+		if (op_user.isPresent() && op_item.isPresent() ) {
+			ItemEntity entity = op_item.get();
+			if(entity.getType().equals("blockchain")) {
+				if (isUserManger(op_user)) {
+					return this.convertToBoundary(entity);
+				} else if (isUserPlayer(op_user)) {
+					if (op_item.get().getActive()) {
+						return this.convertToBoundary(entity);
+					} else {
+						throw new ItemExceptionNotActive();
+					}
+				} else
+					throw new RuntimeException("no permssion are allowed");
+
+			} else {
+				throw new UserNotFoundException(); // TODO: return status = 404 instead of status = 500
+			}
+			}
+			else {
+				throw new ItemNotFoundException();
+			}
+			
+	}
+	
 	@Override
 	@Transactional // (readOnly = false)
 	public void deleteAllItems(String adminSpace, String adminEmail) {

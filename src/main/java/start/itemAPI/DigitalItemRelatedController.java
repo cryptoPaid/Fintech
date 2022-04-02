@@ -57,27 +57,19 @@ public class DigitalItemRelatedController {
 	}
 
 	
-	/*
-	/// create private blockchain
-	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/blockchain", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ItemBoundary createBlockChain(@PathVariable("userSpace") String userSpace,
-			@PathVariable("userEmail") String userEmail, @RequestBody ItemBoundary itemBoundary) {
-
-		return this.itemsService.createItem(userSpace, userEmail, itemBoundary);
-	}
 	//get private blockchain
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ItemBoundary getblockChain(@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail, @PathVariable("itemSpace") String itemSpace,
 			@PathVariable("itemId") String itemId) {
-		return this.itemsService.getSpecificItem(userSpace, userEmail, itemSpace, itemId);
+		return this.itemsService.getBlockChain(userSpace, userEmail, itemSpace, itemId);
 	}
 	// create wallet
 	
 
 	
 	
-	*/
+	
 	
 	
 	@Autowired
