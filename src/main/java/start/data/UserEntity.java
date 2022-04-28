@@ -1,5 +1,7 @@
 package start.data;
 
+import java.util.ArrayList;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,7 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
+import start.data.objects.BlockChain;
+import start.data.objects.Transaction;
+import start.data.objects.Wallet;
 
 @Entity
 @Table(name = "USERS")
@@ -18,6 +24,10 @@ public class UserEntity {
 	private String role;
 	private String username;
 	private String password;
+	private String johnStaCoin;
+	private String wallet ;
+	private String pendingTransaction;
+	
 
 	public UserEntity() {
 
@@ -72,5 +82,27 @@ public class UserEntity {
 		this.password = password;
 	}
 	
+	public String getJohnStaCoin() {
+		return johnStaCoin;
+	}
 
+	public void setJohnStaCoin(String johnStaCoin) {
+		this.johnStaCoin = johnStaCoin;
+	}
+
+	public String getWallet() {
+		return wallet;
+	}
+
+	public void setWallet(String wallet) {
+		this.wallet = wallet;
+	}
+
+	public String getPendingTransaction() {
+		return pendingTransaction;
+	}
+
+	public void setPendingTransaction(String pendingTransaction) {
+		this.pendingTransaction = pendingTransaction;
+	}
 }

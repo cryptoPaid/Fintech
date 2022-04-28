@@ -5,6 +5,12 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="/integrative.project"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="E:/project/ioc-web-db-jms-lib/accessors-smart-1.2.jar"/>
 	<classpathentry kind="lib" path="E:/project/ioc-web-db-jms-lib/activemq-broker-5.16.1.jar"/>
 	<classpathentry kind="lib" path="E:/project/ioc-web-db-jms-lib/activemq-client-5.16.1.jar"/>
@@ -110,10 +116,5 @@
 	<classpathentry kind="lib" path="E:/project/ioc-web-db-jms-lib/tomcat-embed-websocket-9.0.44.jar"/>
 	<classpathentry kind="lib" path="E:/project/ioc-web-db-jms-lib/txw2-2.3.3.jar"/>
 	<classpathentry kind="lib" path="E:/project/ioc-web-db-jms-lib/xmlunit-core-2.7.0.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

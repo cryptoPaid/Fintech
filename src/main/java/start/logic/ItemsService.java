@@ -16,4 +16,6 @@ public interface ItemsService {
 	public ItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId);
 
 	public void deleteAllItems(String adminSpace, String adminEmail);
+
+	ItemBoundary getBlockChain(String userSpace, String userEmail, String itemSpace, String itemId);
 }

@@ -56,14 +56,14 @@ public class DigitalItemRelatedController {
 		this.itemsService.updateItem(userSpace, userEmail, itemSpace, itemId, itemBoundary);
 	}
 
-	
+	/*
 	//get private blockchain
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ItemBoundary getblockChain(@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail, @PathVariable("itemSpace") String itemSpace,
 			@PathVariable("itemId") String itemId) {
 		return this.itemsService.getBlockChain(userSpace, userEmail, itemSpace, itemId);
-	}
+	}*/
 	// create wallet
 	
 

@@ -20,13 +20,16 @@ import start.userAPI.UserID;
 import twins.logic.UserNotFoundException;
 import start.data.UserEntity;
 import start.data.UserRole;
-
-
-
+import start.data.objects.BlockChain;
+import start.data.objects.Transaction;
+import start.data.objects.Wallet;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 @Service
 public class UserLogicImplementation implements AdvancedUsersService {
 	private UserDao userDao;
 	private String space;
+	private ObjectMapper jackson;
 
 	@Autowired
 	public UserLogicImplementation(UserDao userDao) {
@@ -39,6 +42,8 @@ public class UserLogicImplementation implements AdvancedUsersService {
 	@Transactional // (readOnly = false)
 	public UserBoundary createUser(UserBoundary input) {
 		// Tx - BEGIN
+		System.out.println(input.toString());
+
 		UserEntity entity = this.convertFromBoundary(input);
 
 		// store entity to database using INSERT query
@@ -126,7 +131,6 @@ public class UserLogicImplementation implements AdvancedUsersService {
 
 	private UserEntity convertFromBoundary(UserBoundary boundary) {
 		UserEntity entity = new UserEntity();
-
 		if (boundary.getUserId() != null) {
 			entity.setEmail(boundary.getUserId().getEmail());
 			entity.setSpace(boundary.getUserId().getSpace());
@@ -152,8 +156,33 @@ public class UserLogicImplementation implements AdvancedUsersService {
 		} else {
 			throw new RuntimeException("faild to get avatar"); // TODO: return status = 404 instead of status = 500
 		}
-		//
+		// TODO ADD CHECKS FOR FIRST LAST NAME
+		/*
+		 * if(boundary.getFirstName()!= null || boundary.getLastName()!=null) {
+		 * 
+		 * } else
+		 */
+			
+		
 
+		  /*if(boundary.getJohnStaCoin()!= null) {
+			  entity.setJohnStaCoin(boundary.getJohnStaCoin());
+		  }
+		  	else { 
+		  		throw new RuntimeException("faild to get blockchain"); // TODO: return status = 404 instead of status = 500
+		   }*/
+		
+		
+
+		  if(boundary.getWallet() != null)
+		  entity.setWallet(marshal(entity.getWallet()));
+		   else { 
+			   throw new RuntimeException("faild to get wallet"); // TODO: return status = 404 instead  of status = 500
+		 }
+		  
+		  //save pending transcation
+		  entity.setPendingTransaction(marshal(entity.getPendingTransaction()));
+		 
 		return entity;
 
 	}
@@ -175,6 +204,9 @@ public class UserLogicImplementation implements AdvancedUsersService {
 			boundary.setUserId(new UserID(this.space, userDeatalis.getEmail()));
 			boundary.setRole(userDeatalis.getRole());
 			boundary.setPassword(userDeatalis.getPassword());
+			boundary.setWallet(userDeatalis.getWallet());
+			boundary.setJohnStaCoin(userDeatalis.getJohnStaCoin());
+			boundary.setPendingTransaction(userDeatalis.getPendingTransaction());
 		}
 		return boundary;
 
@@ -193,40 +225,55 @@ public class UserLogicImplementation implements AdvancedUsersService {
 			boundary.setUserId(new UserID(entity.getSpace(), entity.getEmail()));
 			boundary.setRole(entity.getRole());
 			boundary.setPassword(entity.getPassword());
+
+			// add extra for user
+			/*
+			 boundary.setJohnStaCoin(entity.getJohnStaCoin());
+			  boundary.setWallet(entity.getWallet());
+			  boundary.setPendingTransaction(entity.getPendingTransaction());
+			 */
 		}
 
 		return boundary;
 	}
-
-	/*@Override
-	public List<UserBoundary> getAllUsers(String userSpace, String userEmail, int size, int page){
-
-		Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
-		if (op.isPresent()) {
-			if (isUserAdmin(op)) {
-
-				Page<UserEntity> pageOfEntities = this.userDao
-						.findAll(PageRequest.of(page, size, Direction.ASC, "role", "email"));
-
-				List<UserEntity> entities = pageOfEntities.getContent();
-				List<UserBoundary> rv = new ArrayList<>();
-				for (UserEntity entity : entities) {
-					UserBoundary boundary = convertToBoundary(entity);
-					rv.add(boundary);
-				}
-				return rv;
-			}
-		}
-
-		else {
-			throw new UserNotFoundException(); // TODO: return status = 404 instead of status = 500
-
-		}
-		throw new RuntimeException("user is not admin");
-
-	}*/
-
 	
+	// use Jackson to convert JSON to Object
+	private <T> T unmarshal(String json, Class<T> type) {
+		try {
+			return this.jackson.readValue(json, type);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-	
+	private String marshal(Object moreDetails) {
+		try {
+			return this.jackson.writeValueAsString(moreDetails);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/*
+	 * @Override public List<UserBoundary> getAllUsers(String userSpace, String
+	 * userEmail, int size, int page){
+	 * 
+	 * Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
+	 * if (op.isPresent()) { if (isUserAdmin(op)) {
+	 * 
+	 * Page<UserEntity> pageOfEntities = this.userDao .findAll(PageRequest.of(page,
+	 * size, Direction.ASC, "role", "email"));
+	 * 
+	 * List<UserEntity> entities = pageOfEntities.getContent(); List<UserBoundary>
+	 * rv = new ArrayList<>(); for (UserEntity entity : entities) { UserBoundary
+	 * boundary = convertToBoundary(entity); rv.add(boundary); } return rv; } }
+	 * 
+	 * else { throw new UserNotFoundException(); // TODO: return status = 404
+	 * instead of status = 500
+	 * 
+	 * } throw new RuntimeException("user is not admin");
+	 * 
+	 * }
+	 */
+
 }

@@ -43,7 +43,7 @@ public class OperationsLogicImplementation implements AdvancedOperationsService 
 	private final String ADD_TRANSACTION = "ADD_TRANSACTION";
 	private final String GET_WALLET = "GET_WALLET";
 	private final String FETCH_TRANSACTIONS_BY_ID = "FETCH_TRANSACTIONS_BY_ID";
-
+	
 	private OperationDao operationDao;
 	private ObjectMapper jackson;
 	private AtomicLong atomicLong;

@@ -47,7 +47,7 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) {
 
 		Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
-
+		
 		System.out.println("" + item.toString());
 		
 		if (op.isPresent()) {
@@ -61,7 +61,7 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 				// store entity to database using INSERT query
 				i = this.itemDao.save(i);
-
+				
 				return this.convertToBoundary(i);
 			}
 
