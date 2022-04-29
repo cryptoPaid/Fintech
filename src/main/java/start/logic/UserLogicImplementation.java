@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import start.userAPI.NewUserDetails;
@@ -29,8 +30,8 @@ import java.security.PublicKey;
 public class UserLogicImplementation implements AdvancedUsersService {
 	private UserDao userDao;
 	private String space;
-	private ObjectMapper jackson;
-
+	private ObjectMapper jackson = new ObjectMapper();
+	
 	@Autowired
 	public UserLogicImplementation(UserDao userDao) {
 		super();
@@ -170,7 +171,7 @@ public class UserLogicImplementation implements AdvancedUsersService {
 		  }
 		  	else { 
 		  		throw new RuntimeException("faild to get blockchain"); // TODO: return status = 404 instead of status = 500
-		   }*/
+		   }*
 		
 		
 
@@ -182,7 +183,7 @@ public class UserLogicImplementation implements AdvancedUsersService {
 		  
 		  //save pending transcation
 		  entity.setPendingTransaction(marshal(entity.getPendingTransaction()));
-		 
+		 */
 		return entity;
 
 	}
@@ -194,7 +195,12 @@ public class UserLogicImplementation implements AdvancedUsersService {
 
 	// TODO:
 	public UserBoundary converNewtUserDeatailsToBoundary(NewUserDetails userDeatalis) {
-		UserBoundary boundary = new UserBoundary();
+		//@Value(userDeatalis) private string json
+		System.out.println("johny");
+		String value = marshal(userDeatalis);
+		System.err.println(value);
+		UserBoundary boundary = unmarshal(value, UserBoundary.class);
+		System.out.println(boundary.toString());
 		if (userDeatalis.getEmail() == null || userDeatalis.getUsername() == null || userDeatalis.getPassword() == null
 				|| userDeatalis.getRole() == null) {
 			throw new RuntimeException("faild to convert in new user to boundry"); // TODO: return status = 404 instead
@@ -204,9 +210,11 @@ public class UserLogicImplementation implements AdvancedUsersService {
 			boundary.setUserId(new UserID(this.space, userDeatalis.getEmail()));
 			boundary.setRole(userDeatalis.getRole());
 			boundary.setPassword(userDeatalis.getPassword());
-			boundary.setWallet(userDeatalis.getWallet());
-			boundary.setJohnStaCoin(userDeatalis.getJohnStaCoin());
-			boundary.setPendingTransaction(userDeatalis.getPendingTransaction());
+			String json = marshal(userDeatalis);
+			boundary.setJohnStaCoin(unmarshal(json, BlockChain.class));
+
+		/*	boundary.setWallet(userDeatalis.getWallet());
+			boundary.setPendingTransaction(userDeatalis.getPendingTransaction());*/
 		}
 		return boundary;
 
@@ -240,6 +248,8 @@ public class UserLogicImplementation implements AdvancedUsersService {
 	// use Jackson to convert JSON to Object
 	private <T> T unmarshal(String json, Class<T> type) {
 		try {
+			//jackson.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			System.out.println("in unmarshal " + json.toString());
 			return this.jackson.readValue(json, type);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -248,6 +258,8 @@ public class UserLogicImplementation implements AdvancedUsersService {
 
 	private String marshal(Object moreDetails) {
 		try {
+			//jackson.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			System.out.println("in marshal " + moreDetails.toString());
 			return this.jackson.writeValueAsString(moreDetails);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -12,21 +12,21 @@ public class NewUserDetails {
 	String username;
 	String password;
 	BlockChain johnStaCoin;
-	Wallet wallet ;
-	ArrayList<Transaction> pendingTransaction;
+	//Wallet wallet ;
+	//ArrayList<Transaction> pendingTransaction;
 	public NewUserDetails() {
 	}
-
-	public NewUserDetails(String email, String role, String username, String password, BlockChain johnStaCoin,
-			Wallet wallet, ArrayList<Transaction> pendingTransaction) {
+//, BlockChain johnStaCoin,Wallet wallet, ArrayList<Transaction> pendingTransaction
+	
+	public NewUserDetails(String email, String role, String username, String password, BlockChain johnStaCoin) {
 		super();
 		this.email = email;
 		this.role = role;
 		this.username = username;
 		this.password = password;
 		this.johnStaCoin = johnStaCoin;
-		this.wallet = wallet;
-		this.pendingTransaction = pendingTransaction;
+		/*this.wallet = wallet;
+		this.pendingTransaction = pendingTransaction;*/
 	}
 
 
@@ -38,7 +38,7 @@ public class NewUserDetails {
 		this.johnStaCoin = johnStaCoin;
 	}
 
-	public Wallet getWallet() {
+	/*public Wallet getWallet() {
 		return wallet;
 	}
 
@@ -53,7 +53,7 @@ public class NewUserDetails {
 	public void setPendingTransaction(ArrayList<Transaction> pendingTransaction) {
 		this.pendingTransaction = pendingTransaction;
 	}
-
+*/
 	public String getEmail() {
 		return email;
 	}
@@ -89,7 +89,7 @@ public class NewUserDetails {
 	@Override
 	public String toString() {
 		return "NewUserDetails : email= " + email + ", role= " + role + ", username= " + username + ", password= "
-				+ password;
+				+ password + "blockchain = " + johnStaCoin;
 	}
 
 }

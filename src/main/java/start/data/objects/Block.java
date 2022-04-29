@@ -9,7 +9,7 @@ public class Block {
 	    private String hash;
 	    private String previousHash;
 	    private ArrayList<Transaction> transaction = new ArrayList<>();
-	    
+	    private int nonce ;
 	    
 	    public Block() {
 	    	
@@ -31,7 +31,27 @@ public class Block {
 	        return previousHash;
 	    }
 
-	    public ArrayList<Transaction> getTransaction() {
+	    public int getNonce() {
+			return nonce;
+		}
+
+		public void setNonce(int nonce) {
+			this.nonce = nonce;
+		}
+
+		public void setTimestamp(Date timestamp) {
+			this.timestamp = timestamp;
+		}
+
+		public void setData(String data) {
+			this.data = data;
+		}
+
+		public void setTransaction(ArrayList<Transaction> transaction) {
+			this.transaction = transaction;
+		}
+
+		public ArrayList<Transaction> getTransaction() {
 	        return transaction;
 	    }
 
