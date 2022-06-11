@@ -44,6 +44,13 @@ public class Wallet {
 
 
 
+	@Override
+	public String toString() {
+		return "Wallet [privateKey=" + privateKey + ", publicKey=" + publicKey + ", balance=" + balance + "]";
+	}
+
+
+
 	public void setBalance(double balance) {
 		this.balance = balance;
 	} 

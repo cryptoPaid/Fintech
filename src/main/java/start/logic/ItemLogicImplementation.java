@@ -16,11 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import start.data.ItemEntity;
+import start.data.TransactionEntity;
 import start.data.UserEntity;
 import start.data.UserRole;
 import start.itemAPI.CreatedBy;
-import start.itemAPI.ItemBoundary;
+import start.itemAPI.TransactionBoundary;
 import start.itemAPI.ItemID;
 import start.userAPI.UserID;
 
@@ -31,7 +31,7 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 	private ObjectMapper jackson;
 	private AtomicLong atomicLong;
 	private UserDao userDao;
-
+		
 	@Autowired
 	public ItemLogicImplementation(ItemDao itemDao, ObjectMapper jackson, UserDao userDao) {
 		super();
@@ -41,10 +41,10 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		this.userDao = userDao;
 
 	}
-
+	//TODO : CHANGE TO createTransaction
 	@Override
 	@Transactional // (readOnly = false)
-	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) {
+	public TransactionBoundary createTransaction(String userSpace, String userEmail, TransactionBoundary item) {
 
 		Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
 		
@@ -52,24 +52,25 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		
 		if (op.isPresent()) {
 			if (isUserManger(op) || isUserAdmin(op)) {
-				ItemEntity i = this.convertFromBoundary(item);
+				TransactionEntity i = this.convertFromBoundary(item);
 				i.setCreatedTimestamp(new Date());
 				i.setId(item.getItemId().getId() + "");
 				i.setEmail(userEmail);
 				i.setSpace(userSpace);
 				i.setIdSpace( userSpace +  "$" + i.getId() );
-
+				// transaction fields
+				i.setFromAddress(item.getFromAddress());
+				i.setToAddress(item.getToAddress());
+				i.setAmount(item.getAmount());
+				i.setHash(item.getHash());
 				// store entity to database using INSERT query
 				i = this.itemDao.save(i);
 				
 				return this.convertToBoundary(i);
 			}
-
 		}
-
 		else {
-			throw new UserNotFoundException(); // TODO: return status = 404 instead of status = 500
-
+			throw new RuntimeException("item cant create without User in the system"); // TODO: return status = 404 instead of status = 500
 		}
 		throw new RuntimeException("item cant create without permssion for MANGER"); // TODO: return status = 404
 																						// instead of status = 500
@@ -110,11 +111,13 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 //        "key4": false
 //    }
 //}
+	
+	//TODO : CHANGE TO updateTransaction --> it is needed???
 
 	@Override
 	@Transactional // (readOnly = false)
-	public ItemBoundary updateItem(String userSpace, String userEmail, String itemId, String itemSpace,
-			ItemBoundary update) {
+	public TransactionBoundary updateTransaction(String userSpace, String userEmail, String itemId, String itemSpace,
+			TransactionBoundary update) {
 
 		System.out.println("User space: " + userSpace + " UserEmail: " + userEmail + " ItemSpace: " + itemSpace
 				+ " Item Id: " + itemId);
@@ -123,12 +126,12 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		System.out.println("idSpace = " + tempIdSpace);
 
 		Optional<UserEntity> op_user = this.userDao.findById(userEmail + "$" + userSpace);
-		Optional<ItemEntity> op_item = this.itemDao.findById(itemId + "$" + itemSpace);
+		Optional<TransactionEntity> op_item = this.itemDao.findById(itemId + "$" + itemSpace);
 
-		ItemEntity updatedEntity;
+		TransactionEntity updatedEntity;
 		if (op_user.isPresent() && op_item.isPresent()) {
 			if (isUserManger(op_user)) {
-				ItemEntity existing = op_item.get();
+				TransactionEntity existing = op_item.get();
 				updatedEntity = this.convertFromBoundary(update);
 				updatedEntity.setId(existing.getId());
 				updatedEntity.setSpace(existing.getSpace());
@@ -153,16 +156,16 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ItemBoundary> getAllItems(String userSpace, String userEmail) {
-		List<ItemBoundary> rv = new ArrayList<>();
+	public List<TransactionBoundary> getAllTransactions(String userSpace, String userEmail) {
+		List<TransactionBoundary> rv = new ArrayList<>();
 		Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
 
 		if (op.isPresent()) {
 			if (isUserManger(op)) {
-				Iterable<ItemEntity> allEntities = this.itemDao.findAll();
+				Iterable<TransactionEntity> allEntities = this.itemDao.findAll();
 
-				for (ItemEntity entity : allEntities) {
-					ItemBoundary boundary = convertToBoundary(entity);
+				for (TransactionEntity entity : allEntities) {
+					TransactionBoundary boundary = convertToBoundary(entity);
 
 					rv.add(boundary);
 				}
@@ -176,19 +179,19 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public ItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId) {
+	public TransactionBoundary getSpecificTransaction(String userSpace, String userEmail, String itemSpace, String itemId) {
 		// TODO Auto-generated method stub
 
-		Optional<ItemEntity> op_item = this.itemDao.findById(itemId + "$" + userSpace);
+		Optional<TransactionEntity> op_item = this.itemDao.findById(itemId + "$" + userSpace);
 		Optional<UserEntity> op_user = this.userDao.findById(userEmail + "$" + userSpace);
 
 		if (op_user.isPresent() && op_item.isPresent()) {
 			if (isUserManger(op_user)) {
-				ItemEntity entity = op_item.get();
+				TransactionEntity entity = op_item.get();
 				return this.convertToBoundary(entity);
 			} else if (isUserPlayer(op_user)) {
 				if (op_item.get().getActive()) {
-					ItemEntity entity = op_item.get();
+					TransactionEntity entity = op_item.get();
 					return this.convertToBoundary(entity);
 				} else {
 					throw new ItemExceptionNotActive();
@@ -202,41 +205,10 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public ItemBoundary getBlockChain(String userSpace, String userEmail, String itemSpace, String itemId) {
-		// TODO Auto-generated method stub
 
-		Optional<ItemEntity> op_item = this.itemDao.findById(itemId + "$" + userSpace);
-		Optional<UserEntity> op_user = this.userDao.findById(userEmail + "$" + userSpace);
-
-		if (op_user.isPresent() && op_item.isPresent() ) {
-			ItemEntity entity = op_item.get();
-			if(entity.getType().equals("blockchain")) {
-				if (isUserManger(op_user)) {
-					return this.convertToBoundary(entity);
-				} else if (isUserPlayer(op_user)) {
-					if (op_item.get().getActive()) {
-						return this.convertToBoundary(entity);
-					} else {
-						throw new ItemExceptionNotActive();
-					}
-				} else
-					throw new RuntimeException("no permssion are allowed");
-
-			} else {
-				throw new UserNotFoundException(); // TODO: return status = 404 instead of status = 500
-			}
-			}
-			else {
-				throw new ItemNotFoundException();
-			}
-			
-	}
-	
 	@Override
 	@Transactional // (readOnly = false)
-	public void deleteAllItems(String adminSpace, String adminEmail) {
+	public void deleteAllTransactions(String adminSpace, String adminEmail) {
 		Optional<UserEntity> op = this.userDao.findById(adminEmail + "$" + adminSpace);
 		if (op.isPresent()) {
 			if (UserLogicImplementation.isUserAdmin(op))
@@ -250,8 +222,8 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 	}
 
-	private ItemBoundary convertToBoundary(ItemEntity entity) {
-		ItemBoundary boundary = new ItemBoundary();
+	private TransactionBoundary convertToBoundary(TransactionEntity entity) {
+		TransactionBoundary boundary = new TransactionBoundary();
 
 		boundary.setItemId(new ItemID(entity.getSpace(), entity.getId()));
 		if (entity.getType() == null || entity.getName() == null) {
@@ -265,12 +237,17 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		boundary.setCreatedBy(new CreatedBy(new UserID(entity.getSpace(), entity.getEmail())));
 		boundary.setItemAttributes(
 				((Map<String, Object>) this.unmarshal(entity.getItemAttributes().toString(), Map.class)));
-
+		// transaction fields
+		boundary.setFromAddress(entity.getFromAddress());
+		boundary.setToAddress(entity.getToAddress());
+		boundary.setAmount(entity.getAmount());
+		boundary.setHash(entity.getHash());
+		
 		return boundary;
 	}
 
-	private ItemEntity convertFromBoundary(ItemBoundary boundary) {
-		ItemEntity entity = new ItemEntity();
+	private TransactionEntity convertFromBoundary(TransactionBoundary boundary) {
+		TransactionEntity entity = new TransactionEntity();
 		if (boundary.getItemId() != null) {
 			// TODO: Split here with '$' to get id and space
 			entity.setId(boundary.getItemId().getId());
@@ -299,7 +276,13 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 		String json = this.marshal(boundary.getItemAttributes());
 		entity.setItemAttributes(json);
-
+		
+		// transaction fields
+		entity.setFromAddress(boundary.getFromAddress());
+		entity.setToAddress(boundary.getToAddress());
+		entity.setAmount(boundary.getAmount());
+		entity.setHash(boundary.getHash());
+		
 		return entity;
 
 	}
@@ -322,15 +305,15 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 	}
 
 	@Override
-	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page) {
+	public List<TransactionBoundary> getAllItems(String userSpace, String userEmail, int size, int page) {
 
-		Page<ItemEntity> pageOfEntities = this.itemDao
+		Page<TransactionEntity> pageOfEntities = this.itemDao
 				.findAll(PageRequest.of(page, size, Direction.ASC, "id", "createdTimestamp"));
 
-		List<ItemEntity> entities = pageOfEntities.getContent();
-		List<ItemBoundary> rv = new ArrayList<>();
-		for (ItemEntity entity : entities) {
-			ItemBoundary boundary = convertToBoundary(entity);
+		List<TransactionEntity> entities = pageOfEntities.getContent();
+		List<TransactionBoundary> rv = new ArrayList<>();
+		for (TransactionEntity entity : entities) {
+			TransactionBoundary boundary = convertToBoundary(entity);
 			rv.add(boundary);
 		}
 		return rv;
@@ -339,15 +322,15 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ItemBoundary> getActiveItemsOnly(String userSpace, String userEmail, int size, int page) {
-		List<ItemBoundary> rv = new ArrayList<>();
+	public List<TransactionBoundary> getActiveItemsOnly(String userSpace, String userEmail, int size, int page) {
+		List<TransactionBoundary> rv = new ArrayList<>();
 
 		Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
 		if (op.isPresent() && isUserPlayer(op)) {
-			List<ItemEntity> allImportantEntities = this.itemDao.findAllByActive(true,
+			List<TransactionEntity> allImportantEntities = this.itemDao.findAllByActive(true,
 					PageRequest.of(page, size, Direction.DESC, "messageTimestamp", "id"));
-			for (ItemEntity entity : allImportantEntities) {
-				ItemBoundary boundary = this.convertToBoundary(entity);
+			for (TransactionEntity entity : allImportantEntities) {
+				TransactionBoundary boundary = this.convertToBoundary(entity);
 				rv.add(boundary);
 
 			}

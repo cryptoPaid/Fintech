@@ -2,20 +2,19 @@ package start.logic;
 
 import java.util.List;
 
-import start.itemAPI.ItemBoundary;
+import start.itemAPI.TransactionBoundary;
 
 
 public interface ItemsService {
-	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item);
+	public TransactionBoundary createTransaction(String userSpace, String userEmail, TransactionBoundary item);
 
-	public ItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
-			ItemBoundary update);
+	public TransactionBoundary updateTransaction(String userSpace, String userEmail, String itemSpace, String itemId,
+			TransactionBoundary update);
 
-	public List<ItemBoundary> getAllItems(String userSpace, String userEmail);
+	public List<TransactionBoundary> getAllTransactions(String userSpace, String userEmail);
 
-	public ItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId);
+	public TransactionBoundary getSpecificTransaction(String userSpace, String userEmail, String itemSpace, String itemId);
 
-	public void deleteAllItems(String adminSpace, String adminEmail);
+	public void deleteAllTransactions(String adminSpace, String adminEmail);
 
-	ItemBoundary getBlockChain(String userSpace, String userEmail, String itemSpace, String itemId);
 }

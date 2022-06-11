@@ -2,19 +2,31 @@ package start.data.objects;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Block {
+		
 	 	private Date timestamp;
 	    private String data="";
 	    private String hash;
 	    private String previousHash;
-	    private ArrayList<Transaction> transaction = new ArrayList<>();
+	    private Map<String,Transaction> transaction =new HashMap<>();
 	    private int nonce ;
 	    
 	    public Block() {
 	    	
 	    }
-	    
+	    public Block(Date timestamp, String data, String hash, String previousHash,
+			 int nonce,Map<String,Transaction> transaction) {
+			super();
+			this.timestamp = timestamp;
+			this.data = data;
+			this.hash = hash;
+			this.previousHash = previousHash;
+			this.transaction = transaction;
+			this.nonce = nonce;
+		}
 	    public Date getTimestamp() {
 	        return timestamp;
 	    }
@@ -47,15 +59,17 @@ public class Block {
 			this.data = data;
 		}
 
-		public void setTransaction(ArrayList<Transaction> transaction) {
+		public void setTransaction(Map<String,Transaction> transaction) {
 			this.transaction = transaction;
 		}
 
-		public ArrayList<Transaction> getTransaction() {
+		public Map<String,Transaction> getTransaction() {
 	        return transaction;
 	    }
 
-	    public void setHash(String hash) {
+
+
+		public void setHash(String hash) {
 	        this.hash = hash;
 	    }
 

@@ -1,23 +1,38 @@
 package start.data.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class BlockChain {
-	 //	private ArrayList<Block> chain;
-	 	private ArrayList<String> list;
+	 	private List<Map<String,Object>> chain;
+		//private HashMap<String,Object> list;
 	    private int miningReward;
 		private int difficulty;
 		public BlockChain() {
 	    	
 	    }
 		
-	    public BlockChain(ArrayList<String> list, int miningReward, int difficulty) {
+		public BlockChain(List<Map<String, Object>> chain, int miningReward, int difficulty) {
 			super();
-			this.list =list;
+			this.chain = chain;
 			this.miningReward = miningReward;
 			this.difficulty = difficulty;
 		}
 
+		public List<Map<String, Object>> getChain() {
+			return chain;
+		}
+
+
+
+		public void setChain(List<Map<String, Object>> chain) {
+			this.chain = chain;
+		}
 		public int getMiningReward() {
 			return miningReward;
 		}
@@ -56,11 +71,11 @@ public class BlockChain {
 	    public void createTransaction(Transaction transaction, ArrayList<Transaction> pendingTransaction) {
 	        pendingTransaction.add(transaction);
 	    }
-		public ArrayList<String> getList() {
-			return list;
-		}
-		public void setList(ArrayList<String> list) {
-			this.list = list;
+
+
+		@Override
+		public String toString() {
+			return "BlockChain [list=" + chain + ", miningReward=" + miningReward + ", difficulty=" + difficulty + "]";
 		}
 		
 

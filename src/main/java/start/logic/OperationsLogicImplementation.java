@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import start.data.ItemEntity;
+import start.data.TransactionEntity;
 import start.data.OperationEntity;
 import start.data.UserEntity;
 import start.itemAPI.Item;
@@ -140,10 +140,10 @@ public class OperationsLogicImplementation implements AdvancedOperationsService 
 
 		String desiredBuildingId = operation.getItem().getItemId().getId(); // the desired building id
 
-		List<ItemEntity> apartmentList = this.itemDao.findAllByType("Apartment"); // list of all apartments
-		List<ItemEntity> relevantApartments = new ArrayList<>();
+		List<TransactionEntity> apartmentList = this.itemDao.findAllByType("Apartment"); // list of all apartments
+		List<TransactionEntity> relevantApartments = new ArrayList<>();
 
-		for (ItemEntity e : apartmentList) {
+		for (TransactionEntity e : apartmentList) {
 			String tempAttributes = e.getItemAttributes(); // Get the extra Attributes Json
 			try {
 				JSONObject obj = new JSONObject(tempAttributes); // Extract Json from attributes
@@ -158,7 +158,7 @@ public class OperationsLogicImplementation implements AdvancedOperationsService 
 
 		}
 		
-		for(ItemEntity e:relevantApartments) {
+		for(TransactionEntity e:relevantApartments) {
 			System.out.println(e.toString());
 		}
 		

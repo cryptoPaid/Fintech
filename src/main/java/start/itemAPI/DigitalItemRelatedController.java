@@ -15,7 +15,7 @@ import start.logic.AdvancedItemsService;
 import start.logic.ItemsService;
 
 
-
+//TODO : CHANGE TO Transaction boundry
 @RestController
 public class DigitalItemRelatedController {
 	private ItemsService itemsService;
@@ -26,14 +26,14 @@ public class DigitalItemRelatedController {
 	}
 
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ItemBoundary getSpecificItem(@PathVariable("userSpace") String userSpace,
+	public TransactionBoundary getSpecificTransaction(@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail, @PathVariable("itemSpace") String itemSpace,
 			@PathVariable("itemId") String itemId) {
-		return this.itemsService.getSpecificItem(userSpace, userEmail, itemSpace, itemId);
+		return this.itemsService.getSpecificTransaction(userSpace, userEmail, itemSpace, itemId);
 	}
 
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<ItemBoundary> getAllItems(
+	public List<TransactionBoundary> getAllTransactions(
 			@RequestParam(name= "size", required = false , defaultValue = "10" ) int size,
 			@RequestParam(name= "page", required = false , defaultValue = "0" ) int page,
 			@PathVariable("userSpace") String userSpace,
@@ -42,18 +42,18 @@ public class DigitalItemRelatedController {
 	}
 
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ItemBoundary createItem(@PathVariable("userSpace") String userSpace,
-			@PathVariable("userEmail") String userEmail, @RequestBody ItemBoundary itemBoundary) {
+	public TransactionBoundary createTransaction(@PathVariable("userSpace") String userSpace,
+			@PathVariable("userEmail") String userEmail, @RequestBody TransactionBoundary transactionBoundary) {
 
-		return this.itemsService.createItem(userSpace, userEmail, itemBoundary);
+		return this.itemsService.createTransaction(userSpace, userEmail, transactionBoundary);
 	}
 	
 
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void updateItem(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail,
+	public void updateTransaction(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail,
 			@PathVariable("itemSpace") String itemSpace, @PathVariable("itemId") String itemId,
-			@RequestBody ItemBoundary itemBoundary) {
-		this.itemsService.updateItem(userSpace, userEmail, itemSpace, itemId, itemBoundary);
+			@RequestBody TransactionBoundary transactionBoundary) {
+		this.itemsService.updateTransaction(userSpace, userEmail, itemSpace, itemId, transactionBoundary);
 	}
 
 	/*

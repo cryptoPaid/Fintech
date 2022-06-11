@@ -20,24 +20,23 @@ public class UserBoundary {
 	private String firstName;
 	private String lastName;
 	private String email;
+/*
 	private BlockChain johnStaCoin;
 	private Wallet wallet ;
 
-	private ArrayList<Transaction> pendingTransaction;
+	private ArrayList<Transaction> pendingTransaction;*/
 	public UserBoundary() {
 		super();
 	}
 
-	public UserBoundary(String username, String password, String email, String role, Wallet wallet, String firstName, String lastName, BlockChain johnStaCoin, ArrayList<Transaction> pendingTransaction) {
+	public UserBoundary(String username, String password, String email, String role, String firstName, String lastName) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.wallet = wallet;
         this.setFirstName(firstName);
         this.lastName = lastName;
-        this.johnStaCoin = johnStaCoin;
-        this.pendingTransaction = pendingTransaction;
+
     }
 
 	public UserID getUserId() {
@@ -77,8 +76,7 @@ public class UserBoundary {
 	@Override
 	public String toString() {
 		return "UserBoundary [userId=" + userId + ", role=" + role + ", username=" + username + ", password=" + password
-				+ ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", johnStaCoin="
-				+ johnStaCoin + ", wallet=" + wallet + ", pendingTransaction=" + pendingTransaction + "]";
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email  + "]";
 	}
 
 	public String getFirstName() {
@@ -104,29 +102,7 @@ public class UserBoundary {
 		this.email = email;
 	}
 
-	public BlockChain getJohnStaCoin() {
-		return johnStaCoin;
-	}
-
-	public void setJohnStaCoin(BlockChain johnStaCoin) {
-		this.johnStaCoin = johnStaCoin;
-	}
-
-	public Wallet getWallet() {
-		return wallet;
-	}
-
-	public void setWallet(Wallet wallet) {
-		this.wallet = wallet;
-	}
-
-	public ArrayList<Transaction> getPendingTransaction() {
-		return pendingTransaction;
-	}
-
-	public void setPendingTransaction(ArrayList<Transaction> pendingTransaction) {
-		this.pendingTransaction = pendingTransaction;
-	}
+	
 
 	
 }
