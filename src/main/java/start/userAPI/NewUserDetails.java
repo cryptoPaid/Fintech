@@ -11,42 +11,26 @@ public class NewUserDetails {
 	String role;
 	String username;
 	String password;
-	BlockChain johnStaCoin;
-	//Wallet wallet ;
+	
 	//ArrayList<Transaction> pendingTransaction;
 	public NewUserDetails() {
 	}
 //, BlockChain johnStaCoin,Wallet wallet, ArrayList<Transaction> pendingTransaction
 	
-	public NewUserDetails(String email, String role, String username, String password, BlockChain johnStaCoin) {
+	public NewUserDetails(String email, String role, String username, String password) {
 		super();
 		this.email = email;
 		this.role = role;
 		this.username = username;
 		this.password = password;
-		this.johnStaCoin = johnStaCoin;
-		/*this.wallet = wallet;
-		this.pendingTransaction = pendingTransaction;*/
+
+		/*this.pendingTransaction = pendingTransaction;*/
 	}
 
 
-	public BlockChain getJohnStaCoin() {
-		return johnStaCoin;
-	}
+	
 
-	public void setJohnStaCoin(BlockChain johnStaCoin) {
-		this.johnStaCoin = johnStaCoin;
-	}
-
-	/*public Wallet getWallet() {
-		return wallet;
-	}
-
-	public void setWallet(Wallet wallet) {
-		this.wallet = wallet;
-	}
-
-	public ArrayList<Transaction> getPendingTransaction() {
+		/*public ArrayList<Transaction> getPendingTransaction() {
 		return pendingTransaction;
 	}
 
@@ -89,7 +73,7 @@ public class NewUserDetails {
 	@Override
 	public String toString() {
 		return "NewUserDetails : email= " + email + ", role= " + role + ", username= " + username + ", password= "
-				+ password + "blockchain = " + johnStaCoin;
+				+ password ;
 	}
 
 }

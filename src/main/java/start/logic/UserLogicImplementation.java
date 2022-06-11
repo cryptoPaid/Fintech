@@ -6,13 +6,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import start.userAPI.NewUserDetails;
@@ -22,10 +19,8 @@ import twins.logic.UserNotFoundException;
 import start.data.UserEntity;
 import start.data.UserRole;
 import start.data.objects.BlockChain;
-import start.data.objects.Transaction;
 import start.data.objects.Wallet;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+
 @Service
 public class UserLogicImplementation implements AdvancedUsersService {
 	private UserDao userDao;
@@ -43,7 +38,7 @@ public class UserLogicImplementation implements AdvancedUsersService {
 	@Transactional // (readOnly = false)
 	public UserBoundary createUser(UserBoundary input) {
 		// Tx - BEGIN
-		System.out.println(input.toString());
+		//System.out.println(input.toString());
 
 		UserEntity entity = this.convertFromBoundary(input);
 
@@ -165,24 +160,24 @@ public class UserLogicImplementation implements AdvancedUsersService {
 		 */
 			
 		
-
-		  /*if(boundary.getJohnStaCoin()!= null) {
-			  entity.setJohnStaCoin(boundary.getJohnStaCoin());
+			/*
+		  if(boundary.getJohnStaCoin()!= null) {
+			  entity.setJohnStaCoin(marshal(boundary.getJohnStaCoin()));
 		  }
 		  	else { 
 		  		throw new RuntimeException("faild to get blockchain"); // TODO: return status = 404 instead of status = 500
-		   }*
+		   }
 		
 		
 
 		  if(boundary.getWallet() != null)
-		  entity.setWallet(marshal(entity.getWallet()));
+		  entity.setWallet(marshal(boundary.getWallet()));
 		   else { 
 			   throw new RuntimeException("faild to get wallet"); // TODO: return status = 404 instead  of status = 500
 		 }
 		  
 		  //save pending transcation
-		  entity.setPendingTransaction(marshal(entity.getPendingTransaction()));
+		 // entity.setPendingTransaction(marshal(entity.getPendingTransaction()));
 		 */
 		return entity;
 
@@ -196,11 +191,13 @@ public class UserLogicImplementation implements AdvancedUsersService {
 	// TODO:
 	public UserBoundary converNewtUserDeatailsToBoundary(NewUserDetails userDeatalis) {
 		//@Value(userDeatalis) private string json
+		UserBoundary boundary= new UserBoundary();
 		System.out.println("johny");
-		String value = marshal(userDeatalis);
+		System.out.println("before + \n" + userDeatalis);
+		/*String value = marshal(userDeatalis);
 		System.err.println(value);
-		UserBoundary boundary = unmarshal(value, UserBoundary.class);
-		System.out.println(boundary.toString());
+		boundary = unmarshal(value, UserBoundary.class);
+		System.out.println("after "+ boundary.toString());*/
 		if (userDeatalis.getEmail() == null || userDeatalis.getUsername() == null || userDeatalis.getPassword() == null
 				|| userDeatalis.getRole() == null) {
 			throw new RuntimeException("faild to convert in new user to boundry"); // TODO: return status = 404 instead
@@ -210,8 +207,26 @@ public class UserLogicImplementation implements AdvancedUsersService {
 			boundary.setUserId(new UserID(this.space, userDeatalis.getEmail()));
 			boundary.setRole(userDeatalis.getRole());
 			boundary.setPassword(userDeatalis.getPassword());
-			String json = marshal(userDeatalis);
-			boundary.setJohnStaCoin(unmarshal(json, BlockChain.class));
+			boundary.setEmail(userDeatalis.getEmail());
+			//add wallet
+			/*
+			boundary.setWallet(userDeatalis.getWallet());
+			String tmp = marshal(userDeatalis.getWallet());
+			boundary.setWallet(unmarshal(tmp, Wallet.class));
+			boundary.getWallet().setBalance(unmarshal(tmp, Wallet.class).getBalance());
+			boundary.getWallet().setPrivateKey(unmarshal(tmp, Wallet.class).getPrivateKey());
+			boundary.getWallet().setPublicKey(unmarshal(tmp, Wallet.class).getPublicKey());
+*/
+			
+			//add blockchain
+		//	System.err.println("in user deatiales = " +userDeatalis.getJohnStaCoin().toString());
+		//	boundary.setJohnStaCoin(userDeatalis.getJohnStaCoin());
+			//	tmp = marshal(userDeatalis.getJohnStaCoin());
+			//boundary.setJohnStaCoin(unmarshal(tmp,BlockChain.class));
+			//System.out.println("after \n"+ boundary.toString());
+
+			//String json = marshal(userDeatalis);
+			//boundary.setJohnStaCoin(unmarshal(json, BlockChain.class));
 
 		/*	boundary.setWallet(userDeatalis.getWallet());
 			boundary.setPendingTransaction(userDeatalis.getPendingTransaction());*/
@@ -233,12 +248,14 @@ public class UserLogicImplementation implements AdvancedUsersService {
 			boundary.setUserId(new UserID(entity.getSpace(), entity.getEmail()));
 			boundary.setRole(entity.getRole());
 			boundary.setPassword(entity.getPassword());
-
-			// add extra for user
+			
 			/*
-			 boundary.setJohnStaCoin(entity.getJohnStaCoin());
-			  boundary.setWallet(entity.getWallet());
-			  boundary.setPendingTransaction(entity.getPendingTransaction());
+			boundary.setJohnStaCoin(unmarshal(entity.getJohnStaCoin(), BlockChain.class));
+			 boundary.setWallet(unmarshal(entity.getWallet(), Wallet.class));
+			//  boundary.setPendingTransaction(unmarshal(entity.getPendingTransaction(), Transaction.class));
+			// add extra for user*/
+			/*
+			 
 			 */
 		}
 
@@ -249,7 +266,7 @@ public class UserLogicImplementation implements AdvancedUsersService {
 	private <T> T unmarshal(String json, Class<T> type) {
 		try {
 			//jackson.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-			System.out.println("in unmarshal " + json.toString());
+			//System.out.println("in unmarshal " + json.toString());
 			return this.jackson.readValue(json, type);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -259,7 +276,7 @@ public class UserLogicImplementation implements AdvancedUsersService {
 	private String marshal(Object moreDetails) {
 		try {
 			//jackson.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-			System.out.println("in marshal " + moreDetails.toString());
+			//System.out.println("in marshal " + moreDetails.toString());
 			return this.jackson.writeValueAsString(moreDetails);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

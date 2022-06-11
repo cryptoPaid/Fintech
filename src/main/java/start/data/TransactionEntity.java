@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 
 @Entity
-@Table(name = "ITEMS")
-public class ItemEntity {
+@Table(name = "TRANSACTION")
+public class TransactionEntity {
 	// concat id and space
 	private String id;
 	private String space;
@@ -25,11 +25,46 @@ public class ItemEntity {
 	private String name;
 	private boolean active;
 	private Date createdTimestamp;
-
+ 	private int amount;
+    private String toAddress;
+    private String fromAddress;
+    private String hash;
 	
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	public String getToAddress() {
+		return toAddress;
+	}
+
+	public void setToAddress(String toAddress) {
+		this.toAddress = toAddress;
+	}
+
+	public String getFromAddress() {
+		return fromAddress;
+	}
+
+	public void setFromAddress(String fromAddress) {
+		this.fromAddress = fromAddress;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
 	private String itemAttributes;
 
-	public ItemEntity() {
+	public TransactionEntity() {
 
 	}
 

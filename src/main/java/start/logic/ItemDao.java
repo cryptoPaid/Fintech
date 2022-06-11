@@ -8,13 +8,13 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import start.data.ItemEntity;
+import start.data.TransactionEntity;
 
 
-public interface ItemDao extends PagingAndSortingRepository<ItemEntity, String> {
+public interface ItemDao extends PagingAndSortingRepository<TransactionEntity, String> {
 
-	public List<ItemEntity> findAllByActive(@Param("active") boolean active, Pageable pageable);
+	public List<TransactionEntity> findAllByActive(@Param("active") boolean active, Pageable pageable);
 
-	public List<ItemEntity> findAllByType(@Param("type") String type);
+	public List<TransactionEntity> findAllByType(@Param("type") String type);
 
 }

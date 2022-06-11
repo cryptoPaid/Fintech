@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 
-public class ItemBoundary {
+public class TransactionBoundary {
 
 	private ItemID itemID;
 	private String type;
@@ -12,10 +12,19 @@ public class ItemBoundary {
 	private boolean active;
 	private Date createdTimestamp;
 	private CreatedBy createdBy;
+	//private String 
 	private Map<String, Object> itemAttributes;
+	//TODO : CHANGE TO Transaction + create Get&Set + Constrauctor 
+	// Transaction boundry
+ 	private int amount;
+    private String toAddress;
+    private String fromAddress;
+	private String hash;
 
-	public ItemBoundary(ItemID itemID, String type, String name, boolean active, Date createdTimestamp,
-			CreatedBy createdBy, Map<String, Object> itemAttributes) {
+	
+	public TransactionBoundary(ItemID itemID, String type, String name, boolean active, Date createdTimestamp,
+			CreatedBy createdBy, Map<String, Object> itemAttributes, int amount, String toAddress, String fromAddress,
+			String hash) {
 		super();
 		this.itemID = itemID;
 		this.type = type;
@@ -24,9 +33,49 @@ public class ItemBoundary {
 		this.createdTimestamp = createdTimestamp;
 		this.createdBy = createdBy;
 		this.itemAttributes = itemAttributes;
+		this.amount = amount;
+		this.toAddress = toAddress;
+		this.fromAddress = fromAddress;
+		this.hash = hash;
+	}
+	
+    public int getAmount() {
+		return amount;
 	}
 
-	public ItemBoundary() {
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	public String getFromAddress() {
+		return fromAddress;
+	}
+
+	public void setFromAddress(String fromAddress) {
+		this.fromAddress = fromAddress;
+	}
+
+    
+    
+
+
+	public String getToAddress() {
+		return toAddress;
+	}
+
+	public void setToAddress(String toAddress) {
+		this.toAddress = toAddress;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	public TransactionBoundary() {
 		super();
 	}
 
@@ -89,8 +138,11 @@ public class ItemBoundary {
 	@Override
 	public String toString() {
 		return "ItemBoundary [itemID=" + itemID + ", type=" + type + ", name=" + name + ", active=" + active
-				+ ", createdTimestamp=" + createdTimestamp + ", createdBy=" + createdBy 
-				+ ", itemAttributes=" + itemAttributes + "]";
+				+ ", createdTimestamp=" + createdTimestamp + ", createdBy=" + createdBy + ", itemAttributes="
+				+ itemAttributes + ", amount=" + amount + ", toAddress=" + toAddress + ", fromAddress=" + fromAddress
+				+ ", hash=" + hash + "]";
 	}
+
+	
 
 }
