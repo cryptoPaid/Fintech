@@ -26,14 +26,14 @@ public class DigitalItemRelatedController {
 	}
 
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public TransactionBoundary getSpecificItem(@PathVariable("userSpace") String userSpace,
+	public TransactionBoundary getSpecificTransaction(@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail, @PathVariable("itemSpace") String itemSpace,
 			@PathVariable("itemId") String itemId) {
 		return this.itemsService.getSpecificTransaction(userSpace, userEmail, itemSpace, itemId);
 	}
 
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<TransactionBoundary> getAllItems(
+	public List<TransactionBoundary> getAllTransactions(
 			@RequestParam(name= "size", required = false , defaultValue = "10" ) int size,
 			@RequestParam(name= "page", required = false , defaultValue = "0" ) int page,
 			@PathVariable("userSpace") String userSpace,
@@ -42,7 +42,7 @@ public class DigitalItemRelatedController {
 	}
 
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public TransactionBoundary createItem(@PathVariable("userSpace") String userSpace,
+	public TransactionBoundary createTransaction(@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail, @RequestBody TransactionBoundary transactionBoundary) {
 
 		return this.itemsService.createTransaction(userSpace, userEmail, transactionBoundary);
@@ -50,13 +50,13 @@ public class DigitalItemRelatedController {
 	
 
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void updateItem(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail,
+	public void updateTransaction(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail,
 			@PathVariable("itemSpace") String itemSpace, @PathVariable("itemId") String itemId,
 			@RequestBody TransactionBoundary transactionBoundary) {
 		this.itemsService.updateTransaction(userSpace, userEmail, itemSpace, itemId, transactionBoundary);
 	}
 
-	/*
+	/* johny test
 	//get private blockchain
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ItemBoundary getblockChain(@PathVariable("userSpace") String userSpace,
