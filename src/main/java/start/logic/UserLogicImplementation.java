@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import start.userAPI.NewUserDetails;
 import start.userAPI.UserBoundary;
 import start.userAPI.UserID;
-import twins.logic.UserNotFoundException;
+import start.logic.UserNotFoundException;
 import start.data.UserEntity;
 import start.data.UserRole;
 import start.data.objects.BlockChain;

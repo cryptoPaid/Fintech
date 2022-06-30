@@ -2,7 +2,7 @@ package start.logic;
 
 import java.util.List;
 
-import twins.userAPI.UserBoundary;
+import start.userAPI.UserBoundary;
 
 public interface AdvancedUsersService extends UsersService {
 	
