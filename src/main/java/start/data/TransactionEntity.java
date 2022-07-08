@@ -29,7 +29,24 @@ public class TransactionEntity {
     private String toAddress;
     private String fromAddress;
     private String hash;
-	
+	private boolean approve;
+
+	@Override
+	public String toString() {
+		return "TransactionEntity [id=" + id + ", space=" + space + ", idSpace=" + idSpace + ", email=" + email
+				+ ", type=" + type + ", name=" + name + ", active=" + active + ", createdTimestamp=" + createdTimestamp
+				+ ", amount=" + amount + ", toAddress=" + toAddress + ", fromAddress=" + fromAddress + ", hash=" + hash
+				+ ", approve=" + approve + ", itemAttributes=" + itemAttributes + "]";
+	}
+
+	public boolean isApprove() {
+		return approve;
+	}
+
+	public void setApprove(boolean approve) {
+		this.approve = approve;
+	}
+
 	public int getAmount() {
 		return amount;
 	}

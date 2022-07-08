@@ -14,6 +14,15 @@ public class Wallet {
 
 
 
+	public Wallet(String privateKey, String publicKey, double balance) {
+		super();
+		this.privateKey = privateKey;
+		this.publicKey = publicKey;
+		this.balance = balance;
+	}
+
+
+
 	public String getPrivateKey() {
 		return privateKey;
 	}

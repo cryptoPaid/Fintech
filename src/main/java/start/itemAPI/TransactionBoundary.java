@@ -11,7 +11,7 @@ public class TransactionBoundary {
 	private String name;
 	private boolean active;
 	private Date createdTimestamp;
-	private CreatedBy createdBy;
+	//private CreatedBy createdBy;
 	//private String 
 	private Map<String, Object> itemAttributes;
 	//TODO : CHANGE TO Transaction + create Get&Set + Constrauctor 
@@ -20,26 +20,35 @@ public class TransactionBoundary {
     private String toAddress;
     private String fromAddress;
 	private String hash;
-
+	private boolean approve;
 	
 	public TransactionBoundary(ItemID itemID, String type, String name, boolean active, Date createdTimestamp,
-			CreatedBy createdBy, Map<String, Object> itemAttributes, int amount, String toAddress, String fromAddress,
-			String hash) {
+			 Map<String, Object> itemAttributes, int amount, String toAddress, String fromAddress,
+			String hash,boolean approve) {
 		super();
 		this.itemID = itemID;
 		this.type = type;
 		this.name = name;
 		this.active = active;
 		this.createdTimestamp = createdTimestamp;
-		this.createdBy = createdBy;
+		//this.createdBy = createdBy;
 		this.itemAttributes = itemAttributes;
 		this.amount = amount;
 		this.toAddress = toAddress;
 		this.fromAddress = fromAddress;
 		this.hash = hash;
+		this.approve=approve;
 	}
 	
-    public int getAmount() {
+    public boolean isApprove() {
+		return approve;
+	}
+
+	public void setApprove(boolean approve) {
+		this.approve = approve;
+	}
+
+	public int getAmount() {
 		return amount;
 	}
 
@@ -118,7 +127,7 @@ public class TransactionBoundary {
 	public void setCreatedTimestamp(Date createdTimestamp) {
 		this.createdTimestamp = createdTimestamp;
 	}
-
+/*
 	public CreatedBy getCreatedBy() {
 		return createdBy;
 	}
@@ -126,7 +135,7 @@ public class TransactionBoundary {
 	public void setCreatedBy(CreatedBy createdBy) {
 		this.createdBy = createdBy;
 	}
-
+*/
 	public Map<String, Object> getItemAttributes() {
 		return itemAttributes;
 	}
@@ -138,9 +147,9 @@ public class TransactionBoundary {
 	@Override
 	public String toString() {
 		return "ItemBoundary [itemID=" + itemID + ", type=" + type + ", name=" + name + ", active=" + active
-				+ ", createdTimestamp=" + createdTimestamp + ", createdBy=" + createdBy + ", itemAttributes="
+				+ ", createdTimestamp=" + createdTimestamp + ", itemAttributes="
 				+ itemAttributes + ", amount=" + amount + ", toAddress=" + toAddress + ", fromAddress=" + fromAddress
-				+ ", hash=" + hash + "]";
+				+ ", hash=" + hash + "]" + " ,approved = " + approve;
 	}
 
 	

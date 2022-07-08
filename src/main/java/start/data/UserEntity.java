@@ -19,8 +19,37 @@ public class UserEntity {
 	private String role;
 	private String username;
 	private String password;
-	/*private String johnStaCoin;
-	private String wallet ;
+	private String johnStaCoin;
+	private String privateKey;
+	private String publicKey;
+	private double balance;
+
+	public String getPrivateKey() {
+		return privateKey;
+	}
+
+	public void setPrivateKey(String privateKey) {
+		this.privateKey = privateKey;
+	}
+
+	public String getPublicKey() {
+		return publicKey;
+	}
+
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+
+	/*private String wallet ;
 	private String pendingTransaction;*/
 	
 
@@ -76,7 +105,7 @@ public class UserEntity {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	/*
+	
 	public String getJohnStaCoin() {
 		return johnStaCoin;
 	}
@@ -84,7 +113,7 @@ public class UserEntity {
 	public void setJohnStaCoin(String johnStaCoin) {
 		this.johnStaCoin = johnStaCoin;
 	}
-
+/*
 	public String getWallet() {
 		return wallet;
 	}

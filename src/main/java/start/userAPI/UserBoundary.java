@@ -20,25 +20,36 @@ public class UserBoundary {
 	private String firstName;
 	private String lastName;
 	private String email;
-/*
-	private BlockChain johnStaCoin;
+	private String johnStaCoin;
 	private Wallet wallet ;
+
+
+
+	/*
+	private BlockChain johnStaCoin;
 
 	private ArrayList<Transaction> pendingTransaction;*/
 	public UserBoundary() {
 		super();
 	}
 
-	public UserBoundary(String username, String password, String email, String role, String firstName, String lastName) {
+	public UserBoundary(String username, String password, String email, String role, String firstName, String lastName,String johnStaCoin,Wallet wallet) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
         this.setFirstName(firstName);
         this.lastName = lastName;
-
+        this.johnStaCoin = johnStaCoin;
+        this.wallet = wallet;
     }
+	public Wallet getWallet() {
+		return wallet;
+	}
 
+	public void setWallet(Wallet wallet) {
+		this.wallet = wallet;
+	}
 	public UserID getUserId() {
 		return userId;
 	}
@@ -73,10 +84,14 @@ public class UserBoundary {
 
 
 
+
+
+
 	@Override
 	public String toString() {
 		return "UserBoundary [userId=" + userId + ", role=" + role + ", username=" + username + ", password=" + password
-				+ ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email  + "]";
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", johnStaCoin="
+				+ johnStaCoin + ", wallet=" + wallet + "]";
 	}
 
 	public String getFirstName() {
@@ -100,6 +115,14 @@ public class UserBoundary {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getJohnStaCoin() {
+		return johnStaCoin;
+	}
+
+	public void setJohnStaCoin(String johnStaCoin) {
+		this.johnStaCoin = johnStaCoin;
 	}
 
 	

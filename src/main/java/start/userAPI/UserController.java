@@ -27,9 +27,10 @@ public class UserController {
 	
 	
 	@RequestMapping(path = "/blockchain/users", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public UserBoundary createUser(@RequestBody NewUserDetails userDeatalis) {
-		System.out.println(userDeatalis.toString());
-		UserBoundary user = this.userService.converNewtUserDeatailsToBoundary(userDeatalis);
+	public UserBoundary createUser(@RequestBody UserBoundary user) {
+		//System.out.println(userDeatalis.toString());
+		//UserBoundary user = this.userService.converNewtUserDeatailsToBoundary(userDeatalis);
+		System.err.println(user);
 		return this.userService.createUser(user);
 	}
 

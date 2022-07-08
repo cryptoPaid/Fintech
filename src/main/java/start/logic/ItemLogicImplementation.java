@@ -52,21 +52,28 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		
 		if (op.isPresent()) {
 			if (isUserManger(op) || isUserAdmin(op)) {
-				TransactionEntity i = this.convertFromBoundary(item);
-				i.setCreatedTimestamp(new Date());
-				i.setId(item.getItemId().getId() + "");
-				i.setEmail(userEmail);
-				i.setSpace(userSpace);
-				i.setIdSpace( userSpace +  "$" + i.getId() );
-				// transaction fields
-				i.setFromAddress(item.getFromAddress());
-				i.setToAddress(item.getToAddress());
-				i.setAmount(item.getAmount());
-				i.setHash(item.getHash());
-				// store entity to database using INSERT query
-				i = this.itemDao.save(i);
-				
-				return this.convertToBoundary(i);
+			//	if(item.getItemId()==null)
+				//{
+					TransactionEntity i = this.convertFromBoundary(item);
+					i.setCreatedTimestamp(new Date());
+					i.setId(item.getItemId().getId() + "");
+					i.setEmail(userEmail);
+					i.setSpace(userSpace);
+					i.setIdSpace( userSpace +  "$" + i.getId() );
+					// transaction fields
+					i.setFromAddress(item.getFromAddress());
+					i.setToAddress(item.getToAddress());
+					i.setAmount(item.getAmount());
+					i.setHash(item.getHash());
+					// store entity to database using INSERT query
+					i = this.itemDao.save(i);
+					
+					return this.convertToBoundary(i);
+			//	}
+				//else
+			//	{
+					//throw new RuntimeException("item exsist in the system");
+				//}
 			}
 		}
 		else {
@@ -127,13 +134,13 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 		Optional<UserEntity> op_user = this.userDao.findById(userEmail + "$" + userSpace);
 		Optional<TransactionEntity> op_item = this.itemDao.findById(itemId + "$" + itemSpace);
-
+		
 		TransactionEntity updatedEntity;
 		if (op_user.isPresent() && op_item.isPresent()) {
 			if (isUserManger(op_user)) {
 				TransactionEntity existing = op_item.get();
 				updatedEntity = this.convertFromBoundary(update);
-				updatedEntity.setId(existing.getId());
+				/*updatedEntity.setId(existing.getId());
 				updatedEntity.setSpace(existing.getSpace());
 				updatedEntity.setEmail(existing.getEmail());
 				updatedEntity.setItemAttributes(this.marshal(update.getItemAttributes()));
@@ -142,7 +149,29 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 				updatedEntity.setType(update.getType());
 				updatedEntity.setName(existing.getName());
 				updatedEntity.setIdSpace(existing.getId() + "$" + existing.getSpace());
-
+				// transaction fields
+				updatedEntity.setFromAddress(existing.getFromAddress());
+				updatedEntity.setToAddress(existing.getToAddress());
+				updatedEntity.setAmount(update.getAmount()-existing.getAmount());
+				updatedEntity.setHash(existing.getHash());
+				updatedEntity.setApprove(true);
+				*/
+				// this for minus to balance'
+				System.err.println("updated entity : " + updatedEntity.toString() );
+				UserEntity user= op_user.get();
+				user.setBalance(user.getBalance()-updatedEntity.getAmount());
+				
+				// this for plus 
+				Optional<UserEntity> user_plus = this.userDao.findById(existing.getToAddress() + "$" + userSpace);
+				if(user_plus.isPresent())
+				{
+					user_plus.get().setBalance(user_plus.get().getBalance()+updatedEntity.getAmount());
+				}
+				else throw new UserNotFoundException("User dosent exist");
+				
+				this.userDao.save(user);
+				this.userDao.save(user_plus.get());
+				//update blance in wallet
 				this.itemDao.save(updatedEntity);
 				return this.convertToBoundary(updatedEntity);
 
@@ -234,7 +263,7 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		}
 		boundary.setActive(entity.getActive());
 		boundary.setCreatedTimestamp(entity.getCreatedTimestamp());
-		boundary.setCreatedBy(new CreatedBy(new UserID(entity.getSpace(), entity.getEmail())));
+		//boundary.setCreatedBy(new CreatedBy(new UserID(entity.getSpace(), entity.getEmail())));
 		boundary.setItemAttributes(
 				((Map<String, Object>) this.unmarshal(entity.getItemAttributes().toString(), Map.class)));
 		// transaction fields
@@ -242,47 +271,29 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		boundary.setToAddress(entity.getToAddress());
 		boundary.setAmount(entity.getAmount());
 		boundary.setHash(entity.getHash());
+		boundary.setApprove(entity.isApprove());
 		
 		return boundary;
 	}
 
 	private TransactionEntity convertFromBoundary(TransactionBoundary boundary) {
 		TransactionEntity entity = new TransactionEntity();
-		if (boundary.getItemId() != null) {
 			// TODO: Split here with '$' to get id and space
 			entity.setId(boundary.getItemId().getId());
 			entity.setSpace(boundary.getItemId().getSpace());
-			entity.setIdSpace(entity.getEmail() + "$" + entity.getSpace());
-		} else {
-			System.out.println("Item id is null!");
-
-		}
-
-		if (boundary.getCreatedBy() != null) {
-			entity.setEmail(boundary.getCreatedBy().getUserId().getEmail());
-		} else {
-			System.out.println("Created By is null!");
-		}
-
-		if (boundary.getName() != null) {
-			entity.setName(boundary.getName());
-		} else {
-			System.out.println("Name is null!");
-		}
-
-		entity.setType(boundary.getType());
+			entity.setIdSpace(boundary.getFromAddress() + "$" + entity.getSpace());
+			entity.setName(boundary.getName());	
+			entity.setType(boundary.getType());
 		entity.setActive(boundary.getActive());
 		entity.setCreatedTimestamp(boundary.getCreatedTimestamp());
-
-		String json = this.marshal(boundary.getItemAttributes());
-		entity.setItemAttributes(json);
-		
-		// transaction fields
 		entity.setFromAddress(boundary.getFromAddress());
 		entity.setToAddress(boundary.getToAddress());
 		entity.setAmount(boundary.getAmount());
 		entity.setHash(boundary.getHash());
-		
+		entity.setApprove(boundary.getActive());
+		String json = this.marshal(boundary.getItemAttributes());
+		entity.setItemAttributes(json);
+	
 		return entity;
 
 	}
@@ -324,16 +335,21 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 	@Transactional(readOnly = true)
 	public List<TransactionBoundary> getActiveItemsOnly(String userSpace, String userEmail, int size, int page) {
 		List<TransactionBoundary> rv = new ArrayList<>();
-
-		Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
-		if (op.isPresent() && isUserPlayer(op)) {
+		String id_combain = userEmail + "$" + userSpace;
+		Optional<UserEntity> op = this.userDao.findById(id_combain);
+		if (op.isPresent() && isUserManger(op) ) {
 			List<TransactionEntity> allImportantEntities = this.itemDao.findAllByActive(true,
-					PageRequest.of(page, size, Direction.DESC, "messageTimestamp", "id"));
+					PageRequest.of(page, size, Direction.DESC, "createdTimestamp", "id"));
 			for (TransactionEntity entity : allImportantEntities) {
-				TransactionBoundary boundary = this.convertToBoundary(entity);
-				rv.add(boundary);
-
+					if(entity.getEmail().equals(userEmail))
+					{
+						TransactionBoundary boundary = this.convertToBoundary(entity);
+						rv.add(boundary);	
+					}
+				
+				
 			}
+			System.err.println(rv);
 			return rv;
 
 		} else {
@@ -372,6 +388,31 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 			return true;
 		} else {
 			throw new RuntimeException("user is not Manager");
+		}
+	}
+	@Override
+	public List<TransactionBoundary> getWaitTransactionOnly(String userSpace, String userEmail, int size, int page) {
+		List<TransactionBoundary> rv = new ArrayList<>();
+		String id_combain = userEmail + "$" + userSpace;
+		Optional<UserEntity> op = this.userDao.findById(id_combain);
+		if (op.isPresent() && isUserManger(op) ) {
+			List<TransactionEntity> allImportantEntities = this.itemDao.findAllByActive(false,
+					PageRequest.of(page, size, Direction.DESC, "createdTimestamp", "id"));
+			for (TransactionEntity entity : allImportantEntities) {
+					if(entity.getEmail().equals(userEmail))
+					{
+						TransactionBoundary boundary = this.convertToBoundary(entity);
+						rv.add(boundary);	
+					}
+				
+				
+			}
+			System.err.println(rv);
+			return rv;
+
+		} else {
+			throw new UserNotFoundException(); // TODO: return status = 404 instead of status = 500
+
 		}
 	}
 

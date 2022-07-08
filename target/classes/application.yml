@@ -1,0 +1,35 @@
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  RequestMappingHandlerMapping: 'trace        '
+server:
+  port: 8050
+spring:
+  application:
+    name: 2021b.johny.stas
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    password: Sql2021!
+    url: jdbc:mysql://localhost:3306/fintech?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
+    username: root
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true

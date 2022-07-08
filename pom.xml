@@ -3,6 +3,7 @@
   <groupId>finetech.project</groupId>
   <artifactId>finetech.project</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
   <build>
     <plugins>
       <plugin>
@@ -28,7 +29,6 @@
     </execution>
   </executions>
 </plugin>
-      
     </plugins>
   </build>
 </project>

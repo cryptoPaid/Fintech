@@ -39,16 +39,22 @@ public class UserLogicImplementation implements AdvancedUsersService {
 	public UserBoundary createUser(UserBoundary input) {
 		// Tx - BEGIN
 		//System.out.println(input.toString());
+		Optional<UserEntity> op = this.userDao.findById(input.getEmail() + "$" + this.space);
+		if (op.isPresent()) {
+			throw new UserNotFoundException("user is  exist"); // TODO: return status = 404 instead of status = 500
 
-		UserEntity entity = this.convertFromBoundary(input);
+		} else {
+			UserEntity entity = this.convertFromBoundary(input);
 
-		// store entity to database using INSERT query
-		entity = this.userDao.save(entity);
+			// store entity to database using INSERT query
+			entity = this.userDao.save(entity);
 
-		// on success: Tx COMMIT
-		// on exception: Tx ROLLBACK
+			// on success: Tx COMMIT
+			// on exception: Tx ROLLBACK
 
-		return this.convertToBoundary(entity); // convert entity to boundary
+			return this.convertToBoundary(entity); // convert entity to boundary
+		}
+		
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public class UserLogicImplementation implements AdvancedUsersService {
 	@Transactional // (readOnly = false)
 	public UserBoundary updateUser(String userSpace, String userEmail, UserBoundary update) {
 		Optional<UserEntity> op = this.userDao.findById(userEmail + "$" + userSpace);
-
+		
 		if (op.isPresent()) {
 			UserEntity existing = op.get();
 
@@ -127,6 +133,7 @@ public class UserLogicImplementation implements AdvancedUsersService {
 
 	private UserEntity convertFromBoundary(UserBoundary boundary) {
 		UserEntity entity = new UserEntity();
+		boundary.setUserId(new UserID(this.space, boundary.getEmail()));
 		if (boundary.getUserId() != null) {
 			entity.setEmail(boundary.getUserId().getEmail());
 			entity.setSpace(boundary.getUserId().getSpace());
@@ -152,6 +159,12 @@ public class UserLogicImplementation implements AdvancedUsersService {
 		} else {
 			throw new RuntimeException("faild to get avatar"); // TODO: return status = 404 instead of status = 500
 		}
+		System.err.println(boundary.getJohnStaCoin());
+		entity.setJohnStaCoin(boundary.getJohnStaCoin());
+		entity.setBalance(boundary.getWallet().getBalance());
+		entity.setPrivateKey(boundary.getWallet().getPrivateKey());
+		entity.setPublicKey(boundary.getWallet().getPublicKey());
+
 		// TODO ADD CHECKS FOR FIRST LAST NAME
 		/*
 		 * if(boundary.getFirstName()!= null || boundary.getLastName()!=null) {
@@ -208,6 +221,7 @@ public class UserLogicImplementation implements AdvancedUsersService {
 			boundary.setRole(userDeatalis.getRole());
 			boundary.setPassword(userDeatalis.getPassword());
 			boundary.setEmail(userDeatalis.getEmail());
+
 			//add wallet
 			/*
 			boundary.setWallet(userDeatalis.getWallet());
@@ -248,7 +262,9 @@ public class UserLogicImplementation implements AdvancedUsersService {
 			boundary.setUserId(new UserID(entity.getSpace(), entity.getEmail()));
 			boundary.setRole(entity.getRole());
 			boundary.setPassword(entity.getPassword());
-			
+			boundary.setJohnStaCoin(entity.getJohnStaCoin()); 
+			boundary.setWallet(new Wallet(entity.getPrivateKey(), entity.getPublicKey(), entity.getBalance()));
+		
 			/*
 			boundary.setJohnStaCoin(unmarshal(entity.getJohnStaCoin(), BlockChain.class));
 			 boundary.setWallet(unmarshal(entity.getWallet(), Wallet.class));

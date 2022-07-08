@@ -4,7 +4,7 @@ public class ItemID {
 
 	private String space;
 	private String id;
-
+	
 	public ItemID() {
 		super();
 	}
@@ -19,6 +19,7 @@ public class ItemID {
 		return space;
 	}
 
+
 	public void setSpace(String space) {
 		this.space = space;
 	}
@@ -30,5 +31,11 @@ public class ItemID {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	@Override
+	public String toString() {
+		return "ItemID [space=" + space + ", id=" + id + "]";
+	}
+
 
 }
