@@ -46,7 +46,7 @@ public class DigitalItemRelatedController {
 			@RequestParam(name= "page", required = false , defaultValue = "0" ) int page,
 			@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail) {
-		return this.advancedItem.getActiveItemsOnly(userSpace, userEmail,size,page);
+		return this.advancedItem.getActiveTransactionsOnly(userSpace, userEmail,size,page);
 	}
 	@RequestMapping(path = "/blockchain/items/{userSpace}/{userEmail}/noactive", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<TransactionBoundary> getAllTransactionsNoActive(

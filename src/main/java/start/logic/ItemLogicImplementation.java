@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import start.data.TransactionEntity;
 import start.data.UserEntity;
 import start.data.UserRole;
-import start.itemAPI.CreatedBy;
 import start.itemAPI.TransactionBoundary;
 import start.itemAPI.ItemID;
 import start.userAPI.UserID;
@@ -51,7 +50,7 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		System.out.println("" + item.toString());
 		
 		if (op.isPresent()) {
-			if (isUserManger(op) || isUserAdmin(op)) {
+			if (isUserManger(op) ) {
 			//	if(item.getItemId()==null)
 				//{
 					TransactionEntity i = this.convertFromBoundary(item);
@@ -83,43 +82,8 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 																						// instead of status = 500
 	}
 
-	// /twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}
-	// {
 
-//    "itemId": {
-//        "space": "2021b.twins",
-//        "id": "99"
-//    },
-//    "type": "ConstructionProject",
-//    "name": "Project1",
-//    "active": true,
-//    "createdTimestamp": "2021-03-07T09:55:05.248+0000",
-//    "createdBy": {
-//        "userId": {
-//            "space": "2021b.twins",
-//            "email": "user2@demo.com"
-//        }
-//    },
-//    "location": {
-//        "lat": 32.115139,
-//        "lng": 34.817804
-//    },
-
-//    "itemAttributes": {  
-
-	// Construction Project -> Buildings -> Add a building to the array -> Convert
-	// to Json
-	// -> Put in item attributes -> Convert to Json -> Post to
-	// /twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}
-
-//        "key1": "can be set to any value you wish",
-//        "key2": "you can also name the attributes any name you like",
-//        "key3": 58,
-//        "key4": false
-//    }
-//}
 	
-	//TODO : CHANGE TO updateTransaction --> it is needed???
 
 	@Override
 	@Transactional // (readOnly = false)
@@ -263,7 +227,6 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 		}
 		boundary.setActive(entity.getActive());
 		boundary.setCreatedTimestamp(entity.getCreatedTimestamp());
-		//boundary.setCreatedBy(new CreatedBy(new UserID(entity.getSpace(), entity.getEmail())));
 		boundary.setItemAttributes(
 				((Map<String, Object>) this.unmarshal(entity.getItemAttributes().toString(), Map.class)));
 		// transaction fields
@@ -333,7 +296,7 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<TransactionBoundary> getActiveItemsOnly(String userSpace, String userEmail, int size, int page) {
+	public List<TransactionBoundary> getActiveTransactionsOnly(String userSpace, String userEmail, int size, int page) {
 		List<TransactionBoundary> rv = new ArrayList<>();
 		String id_combain = userEmail + "$" + userSpace;
 		Optional<UserEntity> op = this.userDao.findById(id_combain);
@@ -380,16 +343,7 @@ public class ItemLogicImplementation implements AdvancedItemsService {
 			throw new RuntimeException("user is not Manager");
 		}
 	}
-	public static boolean isUserAdmin(Optional<UserEntity> op) {
-		UserEntity existing = op.get();
 
-		if (existing.getRole().toString().equals(UserRole.ADMIN.name())) {
-
-			return true;
-		} else {
-			throw new RuntimeException("user is not Manager");
-		}
-	}
 	@Override
 	public List<TransactionBoundary> getWaitTransactionOnly(String userSpace, String userEmail, int size, int page) {
 		List<TransactionBoundary> rv = new ArrayList<>();
